@@ -15,9 +15,9 @@ class IDEActivity : AppCompatActivity() {
 
         binding.buttonRun.setOnClickListener {
             var outSting = ""
-            //Runfunction(outSting)
+            //RunFunction(outSting)
             val intent = Intent(this, ConsoleActivity::class.java)
-            intent.putExtra("result", outSting)
+            intent.putExtra(Constants.RESULT, outSting)
             startActivity(intent)
         }
         binding.buttonHelp.setOnClickListener {
