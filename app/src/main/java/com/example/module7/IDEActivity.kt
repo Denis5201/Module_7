@@ -14,8 +14,8 @@ class IDEActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.buttonRun.setOnClickListener {
-            var outSting = ""
-            //RunFunction(outSting)
+            val str= mutableListOf("5","*","(","50","-","5",")")
+            val outSting = getResult(toRPN(str))
             val intent = Intent(this, ConsoleActivity::class.java)
             intent.putExtra(Constants.RESULT, outSting)
             startActivity(intent)
