@@ -83,16 +83,16 @@ fun getArray(inputStr:String, varArray:MutableList<Variable>):MutableList<String
         if (inputStr[i] == ' ') {
             ++i
         }
-        else if (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '1'..'9') {
+        else if (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '0'..'9') {
             var newStr = ""
-            while (i < inputStr.length && (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '1'..'9')) {
+            while (i < inputStr.length && (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '0'..'9' || inputStr[i] == '.')) {
                 newStr += inputStr[i]
                 ++i
             }
             if (newStr.contains("[A-Za-z]".toRegex())) {
                 val temp = varArray.find { it.name == newStr }
                 if (temp != null)
-                    newStr = temp.value.toString()
+                    newStr = temp.commonValue.toString()
             }
 
             arrayRes.add((newStr))
