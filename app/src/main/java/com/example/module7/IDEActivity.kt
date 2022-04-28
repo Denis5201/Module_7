@@ -14,11 +14,17 @@ class IDEActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.buttonRun.setOnClickListener {
-            val str= mutableListOf("5","*","(","50","-","5",")")
-            val outSting = getResult(toRPN(str))
-            val intent = Intent(this, ConsoleActivity::class.java)
-            intent.putExtra(Constants.RESULT, outSting)
-            startActivity(intent)
+            if (binding.textView.text.isNotEmpty()) {
+                val variableArr = mutableListOf<Variable>(OurInteger("num", false, 10))
+
+                val str = getArray(binding.textView.text.toString(), variableArr)
+                //val str= mutableListOf("5","*","(","50","-","5","^","2",")")
+                val outSting = getResult(toRPN(str))
+
+                val intent = Intent(this, ConsoleActivity::class.java)
+                intent.putExtra(Constants.RESULT, outSting)
+                startActivity(intent)
+            }
         }
         binding.buttonHelp.setOnClickListener {
             val intent = Intent(this, HelpActivity::class.java)

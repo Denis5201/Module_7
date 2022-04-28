@@ -3,7 +3,9 @@ package com.example.module7
 import kotlin.math.pow
 
 fun isOperation(s:String):Boolean {
-    return when(s){"+","-","*","/","%","^" -> true else -> false}
+    return when(s){
+        "+","-","*","/","%","^" -> true
+        else -> false}
 }
 
 fun priority(s:String):Int {
@@ -71,7 +73,40 @@ fun getResult(strRPN:MutableList<String>):String {
         }
         else stack.add(i)
     }
-    return /*if (stack[stack.lastIndex].toInt().equals(stack[stack.lastIndex].toDouble()))
-        stack[stack.lastIndex].toInt().toString()
-    else*/ stack.last()
+    return stack.last()
+}
+
+fun getArray(inputStr:String, varArray:MutableList<Variable>):MutableList<String> {
+    val arrayRes = mutableListOf<String>()
+    var i = 0
+    while(i < inputStr.length) {
+        if (inputStr[i] == ' ') {
+            ++i
+        }
+        else if (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '1'..'9') {
+            var newStr = ""
+            while (i < inputStr.length && (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '1'..'9')) {
+                newStr += inputStr[i]
+                ++i
+            }
+            if (newStr.contains("[A-Za-z]".toRegex())) {
+                val temp = varArray.find { it.name == newStr }
+                if (temp != null)
+                    newStr = temp.value.toString()
+            }
+
+            arrayRes.add((newStr))
+        }
+        else if (isOperation(inputStr[i].toString())) {
+            arrayRes.add(inputStr[i].toString())
+            ++i
+        }
+        else if(inputStr[i] == '(' || inputStr[i] == ')') {
+            arrayRes.add(inputStr[i].toString())
+            ++i
+        }
+        else ++i
+    }
+
+    return arrayRes
 }
