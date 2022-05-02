@@ -5,4 +5,9 @@
     <string name="run">Запустить</string>
     <string name="help">Помощь</string>
     <string name="back">Назад</string>
+    <string-array name="typeOfVariable">
+        <item>Int</item>
+        <item>Double</item>
+        <item>Bool</item>
+    </string-array>
 </resources>

@@ -97,11 +97,7 @@ fun getArray(inputStr:String, varArray:MutableList<Variable>):MutableList<String
 
             arrayRes.add((newStr))
         }
-        else if (isOperation(inputStr[i].toString())) {
-            arrayRes.add(inputStr[i].toString())
-            ++i
-        }
-        else if(inputStr[i] == '(' || inputStr[i] == ')') {
+        else if (isOperation(inputStr[i].toString()) || inputStr[i] == '(' || inputStr[i] == ')') {
             arrayRes.add(inputStr[i].toString())
             ++i
         }
