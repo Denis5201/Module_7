@@ -24,51 +24,30 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/expression"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:text=""
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/nameVariable"
-        android:layout_width="45dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:text=""
-        app:layout_constraintStart_toEndOf="@+id/typeVariable"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/devArea"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonRun"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <Spinner
-        android:id="@+id/typeVariable"
-        android:layout_width="90dp"
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:entries="@array/typeOfVariable"
+        android:entries="@array/typeOfBlock"
+        app:layout_constraintEnd_toStartOf="@+id/addBlock"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="20dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:text="="
-        android:textAlignment="center"
-        android:textSize="30sp"
-        app:layout_constraintStart_toEndOf="@+id/nameVariable"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
-        android:id="@+id/button"
-        android:layout_width="50dp"
+        android:id="@+id/addBlock"
+        android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:text="╳"
-        app:layout_constraintStart_toEndOf="@+id/expression"
+        android:text="@string/add"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
