@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
-    private val blockList = ArrayList<Blocks>()
+    val blockList = ArrayList<Blocks>()
 
     class Holder(item: View):RecyclerView.ViewHolder(item) {
         fun bind(blocks: Blocks) {}

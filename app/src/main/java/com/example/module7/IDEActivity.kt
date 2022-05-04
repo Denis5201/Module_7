@@ -3,10 +3,11 @@ package com.example.module7
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.get
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.module7.databinding.ActivityIdeBinding
+import java.util.*
 
 class IDEActivity : AppCompatActivity() {
     private lateinit var binding : ActivityIdeBinding
@@ -51,6 +52,31 @@ class IDEActivity : AppCompatActivity() {
                 }
                 adapter.addBlock(block)
             }
+            val itemTouchHelper = ItemTouchHelper(helper)
+            itemTouchHelper.attachToRecyclerView(devArea)
         }
+    }
+    private val helper = object : ItemTouchHelper.SimpleCallback(
+        ItemTouchHelper.UP or ItemTouchHelper.DOWN,
+        ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            val from = viewHolder.adapterPosition
+            val to = target.adapterPosition
+
+            Collections.swap(adapter.blockList, from, to)
+            adapter.notifyItemMoved(from, to)
+            return true
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val position = viewHolder.adapterPosition
+            adapter.blockList.removeAt(position)
+            adapter.notifyItemRemoved(position)
+        }
+
     }
 }
