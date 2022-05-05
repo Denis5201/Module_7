@@ -22,15 +22,15 @@ class IDEActivity : AppCompatActivity() {
 
         /*binding.buttonRun.setOnClickListener {
             if (binding.textView.text.isNotEmpty()) {
-                val variableArr = mutableListOf<Variable>(OurInteger("num", false, 10))
+                val variableArr = mutableListOf<Variable>(OurInteger("A", false, 10))
 
                 val str = getArray(binding.expression.text.toString(), variableArr)
                 //val str= mutableListOf("5","*","(","50","-","5","^","2",")")
-                var outSting = getResult(toRPN(str))
+                var outString = getResult(toRPN(str))
 
                 outSting += binding.typeVariable.selectedItem.toString()
                 val intent = Intent(this, ConsoleActivity::class.java)
-                intent.putExtra(Constants.RESULT, outSting)
+                intent.putExtra(Constants.RESULT, outString)
                 startActivity(intent)
             }
         }*/
@@ -47,7 +47,7 @@ class IDEActivity : AppCompatActivity() {
             addBlock.setOnClickListener {
                 val block = when (spinner.selectedItem.toString()) {
                     "Новая переменная" -> Blocks.Assignment()
-                    "Изменить значение" -> Blocks.Change_val()
+                    "Изменить значение" -> Blocks.ChangeVal()
                     else -> Blocks.Assignment()
                 }
                 adapter.addBlock(block)
