@@ -18,5 +18,6 @@
     <string-array name="typeOfBlock">
         <item>Новая переменная</item>
         <item>Изменить значение</item>
+        <item>Ввод/вывод</item>
     </string-array>
 </resources>
