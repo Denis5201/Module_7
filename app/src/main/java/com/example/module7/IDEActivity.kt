@@ -20,20 +20,13 @@ class IDEActivity : AppCompatActivity() {
 
         init()
 
-        /*binding.buttonRun.setOnClickListener {
-            if (binding.textView.text.isNotEmpty()) {
-                val variableArr = mutableListOf<Variable>(OurInteger("A", false, 10))
+        binding.buttonRun.setOnClickListener {
+            val outString = work()
 
-                val str = getArray(binding.expression.text.toString(), variableArr)
-                //val str= mutableListOf("5","*","(","50","-","5","^","2",")")
-                var outString = getResult(toRPN(str))
-
-                outSting += binding.typeVariable.selectedItem.toString()
-                val intent = Intent(this, ConsoleActivity::class.java)
-                intent.putExtra(Constants.RESULT, outString)
-                startActivity(intent)
-            }
-        }*/
+            val intent = Intent(this, ConsoleActivity::class.java)
+            intent.putExtra(Constants.RESULT, outString)
+            startActivity(intent)
+        }
         binding.buttonHelp.setOnClickListener {
             val intent = Intent(this, HelpActivity::class.java)
             startActivity(intent)
@@ -65,8 +58,8 @@ class IDEActivity : AppCompatActivity() {
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
         ): Boolean {
-            val from = viewHolder.adapterPosition
-            val to = target.adapterPosition
+            val from = viewHolder.absoluteAdapterPosition
+            val to = target.absoluteAdapterPosition
 
             Collections.swap(adapter.blockList, from, to)
             adapter.notifyItemMoved(from, to)
@@ -74,10 +67,62 @@ class IDEActivity : AppCompatActivity() {
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            val position = viewHolder.adapterPosition
+            val position = viewHolder.absoluteAdapterPosition
             adapter.blockList.removeAt(position)
             adapter.notifyItemRemoved(position)
         }
+    }
+    private fun work():String {
+        val variableArr = mutableListOf<Variable>()
+        var i = 0
+        var outString = ""
+        var str:String
+        var name:String
 
+        while (i<adapter.blockList.size) {
+            when (adapter.blockList[i]) {
+                is Blocks.Assignment -> {
+                    str = (adapter.blockList[i] as Blocks.Assignment).expression
+                    name = (adapter.blockList[i] as Blocks.Assignment).name
+                    str = if (str.isNotEmpty())
+                        getResult(toRPN(getArray(str, variableArr)))
+                    else
+                        "0"
+                    when ((adapter.blockList[i] as Blocks.Assignment).type) {
+                        "Int" -> variableArr.add(OurInteger(name, str.toDouble().toInt()))
+                        "Double" -> variableArr.add(OurDouble(name, str.toDouble()))
+                    }
+
+                }
+                is Blocks.ChangeVal -> {
+                    str = (adapter.blockList[i] as Blocks.ChangeVal).expression
+                    name = (adapter.blockList[i] as Blocks.ChangeVal).name
+                    val temp = variableArr.find { it.name == name }
+                    if (temp != null)
+                        if (str.isNotEmpty()) {
+                            str = getResult(toRPN(getArray(str, variableArr)))
+                            when (temp) {
+                                is OurInteger -> temp.value = str.toDouble().toInt()
+                                is OurDouble -> temp.commonValue = str.toDouble()
+                                else -> temp.commonValue = str.toDouble()
+                            }
+                        }
+                }
+                is Blocks.InputOutput -> {
+                    str = (adapter.blockList[i] as Blocks.InputOutput).expression
+                    if ((adapter.blockList[i] as Blocks.InputOutput).type == "Output") {
+                        val temp = variableArr.find { it.name == str }
+                        if (temp != null)
+                            outString += when (temp) {
+                                is OurInteger -> temp.value.toString() + "\n"
+                                is OurDouble -> temp.commonValue.toString() + "\n"
+                                else -> temp.commonValue.toString() + "\n"
+                            }
+                    }
+                }
+            }
+            i++
+        }
+        return outString
     }
 }

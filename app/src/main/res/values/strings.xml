@@ -9,7 +9,6 @@
     <string-array name="typeOfVariable">
         <item>Int</item>
         <item>Double</item>
-        <item>Bool</item>
     </string-array>
     <string-array name="typeOfBlock">
         <item>Новая переменная</item>
@@ -17,7 +16,7 @@
         <item>Ввод/вывод</item>
     </string-array>
     <string-array name="wayHowToPut">
-        <item>input</item>
-        <item>output</item>
+        <item>Output</item>
+        <item>Input</item>
     </string-array>
 </resources>
