@@ -48,6 +48,7 @@ class IDEActivity : AppCompatActivity() {
                 val block = when (spinner.selectedItem.toString()) {
                     "Новая переменная" -> Blocks.Assignment()
                     "Изменить значение" -> Blocks.ChangeVal()
+                    "Ввод/вывод" -> Blocks.InputOutput()
                     else -> Blocks.Assignment()
                 }
                 adapter.addBlock(block)
