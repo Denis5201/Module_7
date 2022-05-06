@@ -5,4 +5,18 @@
     <string name="run">Запустить</string>
     <string name="help">Помощь</string>
     <string name="back">Назад</string>
+    <string name="add">Добавить</string>
+    <string-array name="typeOfVariable">
+        <item>Int</item>
+        <item>Double</item>
+        <item>Bool</item>
+    </string-array>
+    <string-array name="wayHowToPut">
+        <item>input</item>
+        <item>output</item>
+    </string-array>
+    <string-array name="typeOfBlock">
+        <item>Новая переменная</item>
+        <item>Изменить значение</item>
+    </string-array>
 </resources>
