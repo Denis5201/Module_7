@@ -21,7 +21,7 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
         var mEdit2: EditText? = null
         constructor(item: View, blockList: ArrayList<Blocks>, type:Int):this(item) {
             when (type){
-                0 -> { val binding=AssignmentBinding.bind(item)
+                Constants.ASSIGNMENT -> { val binding=AssignmentBinding.bind(item)
                     mEdit1=binding.expression
                     mEdit1!!.addTextChangedListener(object : TextWatcher{
                         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -47,7 +47,7 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
                     }
                 }
 
-                1 -> {val binding=ChangeValBinding.bind(item)
+                Constants.CHANGE -> {val binding=ChangeValBinding.bind(item)
                     mEdit1=binding.expression
                     mEdit1!!.addTextChangedListener(object : TextWatcher{
                         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -66,7 +66,7 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
                     })
                 }
 
-                2->{val binding=InputOutputBinding.bind(item)
+                Constants.INOUT -> {val binding=InputOutputBinding.bind(item)
                     mEdit1=binding.expression
                     mEdit1!!.addTextChangedListener(object : TextWatcher{
                         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
@@ -89,16 +89,16 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
 
     override fun getItemViewType(position: Int): Int {
         return when(blockList[position]) {
-            is Blocks.Assignment -> 0
-            is Blocks.ChangeVal -> 1
-            is Blocks.InputOutput -> 2
+            is Blocks.Assignment -> Constants.ASSIGNMENT
+            is Blocks.ChangeVal -> Constants.CHANGE
+            is Blocks.InputOutput -> Constants.INOUT
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val layout = when(viewType){
-            0 -> R.layout.assignment
-            1 -> R.layout.change_val
-            2 -> R.layout.input_output
+            Constants.ASSIGNMENT -> R.layout.assignment
+            Constants.CHANGE -> R.layout.change_val
+            Constants.INOUT -> R.layout.input_output
             else -> R.layout.assignment
         }
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)

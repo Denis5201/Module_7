@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.module7.databinding.ActivityIdeBinding
+import java.lang.Exception
 import java.util.*
 
 class IDEActivity : AppCompatActivity() {
@@ -21,7 +22,11 @@ class IDEActivity : AppCompatActivity() {
         init()
 
         binding.buttonRun.setOnClickListener {
-            val outString = work()
+            val outString = try {
+                work()
+            } catch (e:Exception){
+                "Error! "+e.message.toString()
+            }
 
             val intent = Intent(this, ConsoleActivity::class.java)
             intent.putExtra(Constants.RESULT, outString)
@@ -85,7 +90,7 @@ class IDEActivity : AppCompatActivity() {
                     str = (adapter.blockList[i] as Blocks.Assignment).expression
                     name = (adapter.blockList[i] as Blocks.Assignment).name
                     str = if (str.isNotEmpty())
-                        getResult(toRPN(getArray(str, variableArr)))
+                        getResult(toRPN(getArray(str, variableArr, i)))
                     else
                         "0"
                     when ((adapter.blockList[i] as Blocks.Assignment).type) {
@@ -98,26 +103,30 @@ class IDEActivity : AppCompatActivity() {
                     str = (adapter.blockList[i] as Blocks.ChangeVal).expression
                     name = (adapter.blockList[i] as Blocks.ChangeVal).name
                     val temp = variableArr.find { it.name == name }
-                    if (temp != null)
+                    if (temp != null) {
                         if (str.isNotEmpty()) {
-                            str = getResult(toRPN(getArray(str, variableArr)))
+                            str = getResult(toRPN(getArray(str, variableArr, i)))
                             when (temp) {
                                 is OurInteger -> temp.value = str.toDouble().toInt()
                                 is OurDouble -> temp.commonValue = str.toDouble()
                                 else -> temp.commonValue = str.toDouble()
                             }
                         }
+                    }
+                    else return "Error! Изменение несуществующей переменной! Блок $i"
                 }
                 is Blocks.InputOutput -> {
                     str = (adapter.blockList[i] as Blocks.InputOutput).expression
                     if ((adapter.blockList[i] as Blocks.InputOutput).type == "Output") {
                         val temp = variableArr.find { it.name == str }
-                        if (temp != null)
+                        if (temp != null) {
                             outString += when (temp) {
                                 is OurInteger -> temp.value.toString() + "\n"
                                 is OurDouble -> temp.commonValue.toString() + "\n"
                                 else -> temp.commonValue.toString() + "\n"
                             }
+                        }
+                        else return "Error! Вывод несуществующей переменной! Блок $i"
                     }
                 }
             }
