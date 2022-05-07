@@ -1,5 +1,6 @@
 package com.example.module7
 
+import kotlin.Exception
 import kotlin.math.pow
 
 fun isOperation(s:String):Boolean {
@@ -51,7 +52,7 @@ fun calc(num1:Double, num2:Double, operation:String):Double {
     return when (operation) {
         "^" -> num1.pow(num2)
         "*" -> num1*num2
-        "/" -> if (num2!=0.0) num1/num2 else 0.0
+        "/" -> if (num2!=0.0) num1/num2 else throw Exception("Деление на 0!")
         "+" -> num1+num2
         "-" -> num1-num2
         "%" -> num1%num2
@@ -76,7 +77,7 @@ fun getResult(strRPN:MutableList<String>):String {
     return stack.last()
 }
 
-fun getArray(inputStr:String, varArray:MutableList<Variable>):MutableList<String> {
+fun getArray(inputStr:String, varArray:MutableList<Variable>, position:Int):MutableList<String> {
     val arrayRes = mutableListOf<String>()
     var i = 0
     while(i < inputStr.length) {
@@ -93,15 +94,13 @@ fun getArray(inputStr:String, varArray:MutableList<Variable>):MutableList<String
                 val temp = varArray.find { it.name == newStr }
                 if (temp != null)
                     newStr = temp.commonValue.toString()
+                else
+                    throw Exception("Получение значения, несуществующей переменной! Блок $position")
             }
 
             arrayRes.add((newStr))
         }
-        else if (isOperation(inputStr[i].toString())) {
-            arrayRes.add(inputStr[i].toString())
-            ++i
-        }
-        else if(inputStr[i] == '(' || inputStr[i] == ')') {
+        else if (isOperation(inputStr[i].toString()) || inputStr[i] == '(' || inputStr[i] == ')') {
             arrayRes.add(inputStr[i].toString())
             ++i
         }

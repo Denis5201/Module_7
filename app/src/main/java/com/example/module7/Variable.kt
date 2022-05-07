@@ -1,16 +1,16 @@
 package com.example.module7
 
-open class Variable (val name:String, val isConst:Boolean = false, var commonValue:Double = 0.0) {
+open class Variable (val name:String, var commonValue:Double = 0.0) {}
 
-}
-
-class OurInteger(name:String, isConst:Boolean, commonValue: Double) : Variable(name, isConst, commonValue) {
+class OurInteger(name:String, commonValue: Double) : Variable(name, commonValue) {
     var value = commonValue.toInt()
-    constructor(name:String, isConst:Boolean, value:Int = 0) : this(name, isConst, value.toDouble()){
+    set(value) {
+        this.commonValue=value.toDouble()
+        field=value
+    }
+    constructor(name:String, value:Int = 0) : this(name, value.toDouble()){
         this.value = value
     }
 }
 
-class OurDouble(name:String, isConst:Boolean, value:Double = 0.0) : Variable(name, isConst, value) {
-
-}
+class OurDouble(name:String, value:Double = 0.0) : Variable(name, value) {}
