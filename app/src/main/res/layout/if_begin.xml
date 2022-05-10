@@ -28,7 +28,7 @@
                 android:textSize="30sp" />
 
             <EditText
-                android:id="@+id/nameVariable"
+                android:id="@+id/condition"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
