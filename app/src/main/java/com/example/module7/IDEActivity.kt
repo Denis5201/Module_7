@@ -3,27 +3,34 @@ package com.example.module7
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.module7.databinding.ActivityIdeBinding
-import java.lang.Exception
 import java.util.*
 
 class IDEActivity : AppCompatActivity() {
     private lateinit var binding : ActivityIdeBinding
     private val adapter = RecyclerAdapter()
+    var textEdit = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIdeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+            if (it.resultCode == RESULT_OK) {
+                textEdit=it.data?.getStringExtra(Constants.INPUT).toString()
+            }
+        }
         init()
 
         binding.buttonRun.setOnClickListener {
             val outString = try {
-                work()
+                work(launcher)
             } catch (e:Exception){
                 "Error! "+e.message.toString()
             }
@@ -47,9 +54,16 @@ class IDEActivity : AppCompatActivity() {
                     "Новая переменная" -> Blocks.Assignment()
                     "Изменить значение" -> Blocks.ChangeVal()
                     "Ввод/вывод" -> Blocks.InputOutput()
+                    "Условие" -> Blocks.IfBlock()
+                    "Иначе" -> Blocks.ElseBlock()
+                    "Цикл" -> Blocks.WhileBlock()
+                    "Конец условия" -> Blocks.EndIf()
+                    "Конец цикла" -> Blocks.EndWhile()
                     else -> Blocks.Assignment()
                 }
                 adapter.addBlock(block)
+                if (block is Blocks.IfBlock) adapter.addBlock(Blocks.EndIf())
+                if (block is Blocks.WhileBlock) adapter.addBlock(Blocks.EndWhile())
             }
             val itemTouchHelper = ItemTouchHelper(helper)
             itemTouchHelper.attachToRecyclerView(devArea)
@@ -77,57 +91,58 @@ class IDEActivity : AppCompatActivity() {
             adapter.notifyItemRemoved(position)
         }
     }
-    private fun work():String {
+    private fun work(launcher: ActivityResultLauncher<Intent>):String {
         val variableArr = mutableListOf<Variable>()
         var i = 0
         var outString = ""
-        var str:String
         var name:String
 
         while (i<adapter.blockList.size) {
             when (adapter.blockList[i]) {
                 is Blocks.Assignment -> {
-                    str = (adapter.blockList[i] as Blocks.Assignment).expression
-                    name = (adapter.blockList[i] as Blocks.Assignment).name
-                    str = if (str.isNotEmpty())
-                        getResult(toRPN(getArray(str, variableArr, i)))
-                    else
-                        "0"
-                    when ((adapter.blockList[i] as Blocks.Assignment).type) {
-                        "Int" -> variableArr.add(OurInteger(name, str.toDouble().toInt()))
-                        "Double" -> variableArr.add(OurDouble(name, str.toDouble()))
-                    }
-
+                    assignment(adapter.blockList, variableArr, i)
                 }
                 is Blocks.ChangeVal -> {
-                    str = (adapter.blockList[i] as Blocks.ChangeVal).expression
-                    name = (adapter.blockList[i] as Blocks.ChangeVal).name
-                    val temp = variableArr.find { it.name == name }
-                    if (temp != null) {
-                        if (str.isNotEmpty()) {
-                            str = getResult(toRPN(getArray(str, variableArr, i)))
-                            when (temp) {
-                                is OurInteger -> temp.value = str.toDouble().toInt()
-                                is OurDouble -> temp.commonValue = str.toDouble()
-                                else -> temp.commonValue = str.toDouble()
-                            }
-                        }
-                    }
-                    else return "Error! Изменение несуществующей переменной! Блок $i"
+                    changeVal(adapter.blockList, variableArr, i)
                 }
                 is Blocks.InputOutput -> {
-                    str = (adapter.blockList[i] as Blocks.InputOutput).expression
+                    name = (adapter.blockList[i] as Blocks.InputOutput).expression
                     if ((adapter.blockList[i] as Blocks.InputOutput).type == "Output") {
-                        val temp = variableArr.find { it.name == str }
+                        val temp = variableArr.find { it.name == name }
                         if (temp != null) {
                             outString += when (temp) {
                                 is OurInteger -> temp.value.toString() + "\n"
                                 is OurDouble -> temp.commonValue.toString() + "\n"
+                                is OurBool -> temp.value.toString() + "\n"
                                 else -> temp.commonValue.toString() + "\n"
                             }
                         }
                         else return "Error! Вывод несуществующей переменной! Блок $i"
                     }
+                    else {
+                        launcher.launch(Intent(this@IDEActivity, InputActivity::class.java))
+                        val temp = variableArr.find { it.name == name }
+                        if (temp != null) {
+                            when (temp) {
+                            is OurInteger -> temp.value = textEdit.toDouble().toInt()
+                            is OurDouble -> temp.commonValue = textEdit.toDouble()
+                            is OurBool -> temp.value = textEdit.toDouble().toInt() != 0
+                            else -> temp.commonValue = textEdit.toDouble()
+                        }}
+                    }
+                }
+                is Blocks.IfBlock -> {
+                    i += ifBlock(adapter.blockList, variableArr, i)
+                }
+                is Blocks.ElseBlock -> {
+                    while (i<adapter.blockList.size && adapter.blockList[i] !is Blocks.EndIf) {
+                        ++i
+                    }
+                }
+                is Blocks.WhileBlock -> {
+                    val res = inLoop(adapter.blockList, variableArr, i)
+                    i += res.first
+                    outString += res.second
                 }
             }
             i++

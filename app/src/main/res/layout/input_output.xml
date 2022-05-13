@@ -45,7 +45,7 @@
                 android:layout_width="20dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text=")"
+                android:text="@string/closeBracket"
                 android:textAlignment="center"
                 android:textSize="30sp" />
 

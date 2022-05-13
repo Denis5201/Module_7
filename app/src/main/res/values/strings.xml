@@ -6,14 +6,27 @@
     <string name="help">Помощь</string>
     <string name="back">Назад</string>
     <string name="add">Добавить</string>
+    <string name="ifText">if (</string>
+    <string name="whileText">while (</string>>
+    <string name="closeBracket">)</string>
+    <string name="endIf">end(if)</string>
+    <string name="endWhile">end(while)</string>
+    <string name="input">Ввод</string>
     <string-array name="typeOfVariable">
         <item>Int</item>
         <item>Double</item>
+        <item>Bool</item>
     </string-array>
     <string-array name="typeOfBlock">
         <item>Новая переменная</item>
         <item>Изменить значение</item>
         <item>Ввод/вывод</item>
+        <item>Условие</item>
+        <item>Иначе</item>
+        <item>Цикл</item>
+        <item>Конец Блока</item>
+        <item>Конец условия</item>
+        <item>Конец цикла</item>
     </string-array>
     <string-array name="wayHowToPut">
         <item>Output</item>

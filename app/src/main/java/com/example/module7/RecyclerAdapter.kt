@@ -8,9 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.EditText
 import androidx.recyclerview.widget.RecyclerView
-import com.example.module7.databinding.AssignmentBinding
-import com.example.module7.databinding.ChangeValBinding
-import com.example.module7.databinding.InputOutputBinding
+import com.example.module7.databinding.*
 
 
 class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
@@ -82,6 +80,29 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
                         override fun onNothingSelected(p0: AdapterView<*>?) {}
                     }
                 }
+
+                Constants.IF -> {val binding=IfBlockBinding.bind(item)
+                    mEdit1=binding.condition
+                    mEdit1!!.addTextChangedListener(object : TextWatcher{
+                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                            (blockList[absoluteAdapterPosition] as Blocks.IfBlock).condition = p0.toString()
+                        }
+                        override fun afterTextChanged(p0: Editable?) {}
+                    })
+                }
+
+                Constants.WHILE -> {val binding=WhileBlockBinding.bind(item)
+                    mEdit1=binding.condition
+                    mEdit1!!.addTextChangedListener(object : TextWatcher{
+                        override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                        override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                            (blockList[absoluteAdapterPosition] as Blocks.WhileBlock).condition = p0.toString()
+                        }
+                        override fun afterTextChanged(p0: Editable?) {}
+                    })
+
+                }
             }
 
         }
@@ -92,6 +113,11 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
             is Blocks.Assignment -> Constants.ASSIGNMENT
             is Blocks.ChangeVal -> Constants.CHANGE
             is Blocks.InputOutput -> Constants.INOUT
+            is Blocks.IfBlock -> Constants.IF
+            is Blocks.ElseBlock -> Constants.ELSE
+            is Blocks.WhileBlock -> Constants.WHILE
+            is Blocks.EndIf -> Constants.ENDIF
+            is Blocks.EndWhile -> Constants.ENDWHILE
         }
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -99,6 +125,11 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
             Constants.ASSIGNMENT -> R.layout.assignment
             Constants.CHANGE -> R.layout.change_val
             Constants.INOUT -> R.layout.input_output
+            Constants.IF -> R.layout.if_block
+            Constants.ELSE -> R.layout.else_block
+            Constants.WHILE -> R.layout.while_block
+            Constants.ENDIF -> R.layout.endif_block
+            Constants.ENDWHILE -> R.layout.endwhile_block
             else -> R.layout.assignment
         }
         val view = LayoutInflater.from(parent.context).inflate(layout, parent, false)
@@ -117,6 +148,12 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
             }
             is Blocks.InputOutput -> {
                 holder.mEdit1!!.setText((blockList[position] as Blocks.InputOutput).expression)
+            }
+            is Blocks.IfBlock -> {
+                holder.mEdit1!!.setText((blockList[position] as Blocks.IfBlock).condition)
+            }
+            is Blocks.WhileBlock -> {
+                holder.mEdit1!!.setText((blockList[position] as Blocks.WhileBlock).condition)
             }
         }
     }
