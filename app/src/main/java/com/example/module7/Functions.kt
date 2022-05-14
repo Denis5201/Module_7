@@ -213,22 +213,23 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
     else {
         position++
         if (!uslov) {
-            while (position<i+resume && blockList[position] !is Blocks.WhileBlock && blockList[position] !is Blocks.EndWhile){
-                ++position
-                count++
-            }
-            if (blockList[position] is Blocks.EndWhile) {
-                return Triple(position-i, outString, "")
-            }
-            else if (blockList[position] is Blocks.WhileBlock) {
-                val res = inLoop(blockList, variableArr, position, textEdit, resume-(position-i), usl)
-                if (res.third=="input") {
-                    return Triple(position+res.first, outString+res.second ,"input")
+            while (position<i+resume) {
+                while (position < i + resume && blockList[position] !is Blocks.WhileBlock && blockList[position] !is Blocks.EndWhile) {
+                    ++position
+                    count++
                 }
-                if (res.third=="da") change="da"
-                position += res.first+1
-                count += res.first+1
-                outString += res.second
+                if (blockList[position] is Blocks.EndWhile) {
+                    return Triple(position - i, outString, "")
+                } else if (blockList[position] is Blocks.WhileBlock) {
+                    val res = inLoop(blockList, variableArr, position, textEdit,resume - (position - i), usl)
+                    if (res.third == "input") {
+                        return Triple(position - i + res.first, outString + res.second, "input")
+                    }
+                    if (res.third == "da") change = "da"
+                    position += res.first + 1
+                    count += res.first + 1
+                    outString += res.second
+                }
             }
         }
         var name:String
