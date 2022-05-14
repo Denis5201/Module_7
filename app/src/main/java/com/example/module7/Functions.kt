@@ -192,26 +192,49 @@ fun ifBlock(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i
     return position-i
 }
 
-fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i:Int):Pair<Int, String> {
+fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
+           i:Int, textEdit:String, resume:Int = 0, uslov:Boolean):Triple<Int, String, String> {
     val str = (blockList[i] as Blocks.WhileBlock).condition
     var value:String
+    var change = ""
     var outString = ""
+    var usl = uslov
+    var count = 0
     if (str.isNotEmpty())
         value = getResult(toRPN(getArray(str, variableArr, i)))
     else throw Exception("Error! Введите условие! Блок $i")
 
     var position = i
-    if (value.toDouble().toInt() == 0) {
+    if (uslov && value.toDouble().toInt() == 0) {
         while (position<blockList.size && blockList[position] !is Blocks.EndWhile) {
             ++position
         }
     }
     else {
         position++
+        if (!uslov) {
+            while (position<i+resume && blockList[position] !is Blocks.WhileBlock && blockList[position] !is Blocks.EndWhile){
+                ++position
+                count++
+            }
+            if (blockList[position] is Blocks.EndWhile) {
+                return Triple(position-i, outString, "")
+            }
+            else if (blockList[position] is Blocks.WhileBlock) {
+                val res = inLoop(blockList, variableArr, position, textEdit, resume-(position-i), usl)
+                if (res.third=="input") {
+                    return Triple(position+res.first, outString+res.second ,"input")
+                }
+                if (res.third=="da") change="da"
+                position += res.first+1
+                count += res.first+1
+                outString += res.second
+            }
+        }
         var name:String
-        var count:Int
         while (true) {
-            count = 0
+            count = if (usl) 0 else count
+            if (!usl && change=="da") usl = true
             while (position < blockList.size && blockList[position] !is Blocks.EndWhile) {
                 count++
                 when (blockList[position]) {
@@ -234,9 +257,28 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i:
                                 }
                             } else throw Exception("Error! Вывод несуществующей переменной! Блок $i")
                         }
+                        else {
+                            if (usl) {
+                                return Triple(count, outString ,"input")
+                            }
+
+                            usl = true
+                            change="da"
+                            val temp = variableArr.find { it.name == name }
+                            if (temp != null) {
+                                if (textEdit.isNotEmpty()){
+                                    when (temp) {
+                                        is OurInteger -> temp.value = textEdit.toDouble().toInt()
+                                        is OurDouble -> temp.commonValue = textEdit.toDouble()
+                                        is OurBool -> temp.value = textEdit.toDouble().toInt() != 0
+                                        else -> temp.commonValue = textEdit.toDouble()
+                                    }
+                                }
+                            }
+                        }
                     }
                     is Blocks.IfBlock -> {
-                        var temp = ifBlock(blockList, variableArr, position)
+                        val temp = ifBlock(blockList, variableArr, position)
                         position += temp
                         count += temp
                     }
@@ -246,7 +288,10 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i:
                         }
                     }
                     is Blocks.WhileBlock -> {
-                        val res = inLoop(blockList, variableArr, position)
+                        val res = inLoop(blockList, variableArr, position, textEdit, resume, usl)
+                        if (res.third=="input") {
+                            return Triple(position-i+res.first, res.second,"input")
+                        }
                         position += res.first
                         count += res.first
                         outString += res.second
@@ -261,5 +306,5 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i:
             else position -= count
         }
     }
-    return Pair(position-i, outString)
+    return Triple(position-i, outString, change)
 }

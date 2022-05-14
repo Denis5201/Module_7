@@ -14,30 +14,35 @@ import java.util.*
 class IDEActivity : AppCompatActivity() {
     private lateinit var binding : ActivityIdeBinding
     private val adapter = RecyclerAdapter()
+    var variableArr = mutableListOf<Variable>()
+    var outString = ""
     var textEdit = ""
-
+    val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+        if (it.resultCode == RESULT_OK) {
+            textEdit = it.data?.getStringExtra(Constants.INPUT).toString()
+            val pos = it.data?.getIntExtra(Constants.POS, 0)
+            val resumeWhile = it.data?.getIntExtra(Constants.RESUME, 0)
+            resumeWork(pos!!, resumeWhile!!)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityIdeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
-            if (it.resultCode == RESULT_OK) {
-                textEdit=it.data?.getStringExtra(Constants.INPUT).toString()
-            }
-        }
-        init()
 
+        init()
         binding.buttonRun.setOnClickListener {
-            val outString = try {
-                work(launcher)
+            variableArr = mutableListOf()
+            outString = ""
+            try {
+                val outString = work(launcher, true)
+                if (outString=="input")
+                    return@setOnClickListener
+                runConsole(outString)
             } catch (e:Exception){
                 "Error! "+e.message.toString()
             }
-
-            val intent = Intent(this, ConsoleActivity::class.java)
-            intent.putExtra(Constants.RESULT, outString)
-            startActivity(intent)
         }
         binding.buttonHelp.setOnClickListener {
             val intent = Intent(this, HelpActivity::class.java)
@@ -45,6 +50,17 @@ class IDEActivity : AppCompatActivity() {
         }
     }
 
+    private fun runConsole(str:String){
+        val intent = Intent(this, ConsoleActivity::class.java)
+        intent.putExtra(Constants.RESULT, str)
+        startActivity(intent)
+    }
+    private fun resumeWork(pos: Int, resumeWhile: Int){
+        val temp = work(launcher, false, pos, resumeWhile)
+        if (temp =="input")
+            return
+        runConsole(outString)
+    }
     private fun init(){
         binding.apply {
             devArea.layoutManager = LinearLayoutManager(this@IDEActivity)
@@ -91,11 +107,12 @@ class IDEActivity : AppCompatActivity() {
             adapter.notifyItemRemoved(position)
         }
     }
-    private fun work(launcher: ActivityResultLauncher<Intent>):String {
-        val variableArr = mutableListOf<Variable>()
-        var i = 0
-        var outString = ""
+
+    private fun work(launcher: ActivityResultLauncher<Intent>, cond:Boolean,
+                     pos:Int = 0, resumeWhile:Int = 0):String {
+        var i = pos
         var name:String
+        var usl = cond
 
         while (i<adapter.blockList.size) {
             when (adapter.blockList[i]) {
@@ -120,15 +137,25 @@ class IDEActivity : AppCompatActivity() {
                         else return "Error! Вывод несуществующей переменной! Блок $i"
                     }
                     else {
-                        launcher.launch(Intent(this@IDEActivity, InputActivity::class.java))
+                        if (usl) {
+                            val intent = Intent(this, InputActivity::class.java)
+                            intent.putExtra(Constants.POS, i)
+                            launcher.launch(intent)
+                            return "input"
+                        }
+
+                        usl = true
                         val temp = variableArr.find { it.name == name }
                         if (temp != null) {
+                            if (textEdit.isNotEmpty()){
                             when (temp) {
-                            is OurInteger -> temp.value = textEdit.toDouble().toInt()
-                            is OurDouble -> temp.commonValue = textEdit.toDouble()
-                            is OurBool -> temp.value = textEdit.toDouble().toInt() != 0
-                            else -> temp.commonValue = textEdit.toDouble()
-                        }}
+                                is OurInteger -> temp.value = textEdit.toDouble().toInt()
+                                is OurDouble -> temp.commonValue = textEdit.toDouble()
+                                is OurBool -> temp.value = textEdit.toDouble().toInt() != 0
+                                else -> temp.commonValue = textEdit.toDouble()
+                            }
+                            }
+                        }
                     }
                 }
                 is Blocks.IfBlock -> {
@@ -140,9 +167,17 @@ class IDEActivity : AppCompatActivity() {
                     }
                 }
                 is Blocks.WhileBlock -> {
-                    val res = inLoop(adapter.blockList, variableArr, i)
-                    i += res.first
+                    val res = inLoop(adapter.blockList, variableArr, i, textEdit, resumeWhile, usl)
                     outString += res.second
+                    if (res.third=="input") {
+                        val intent = Intent(this, InputActivity::class.java)
+                        intent.putExtra(Constants.POS, i)
+                        intent.putExtra(Constants.RESUME, res.first)
+                        launcher.launch(intent)
+                        return "input"
+                    }
+                    i += res.first
+
                 }
             }
             i++

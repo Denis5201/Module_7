@@ -13,10 +13,15 @@ class InputActivity : AppCompatActivity() {
         binding = ActivityInputBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val pos = intent.getIntExtra(Constants.POS, 0)
+        val resume = intent.getIntExtra(Constants.RESUME, 0)
+
         binding.enter.setOnClickListener {
             if (binding.textInput.text.toString().isNotEmpty()) {
                 val intent = Intent()
                 intent.putExtra(Constants.INPUT, binding.textInput.text.toString())
+                intent.putExtra(Constants.POS, pos)
+                intent.putExtra(Constants.RESUME, resume)
                 setResult(RESULT_OK, intent)
                 finish()
             }
