@@ -25,3 +25,8 @@ class OurBool(name:String, commonValue: Double) : Variable(name, commonValue) {
         this.value = value
     }
 }
+
+class OurArr(nameI: String, arrOfVarI: MutableList<Variable>) {
+    var name = nameI
+    var arrOfVar = arrOfVarI
+}

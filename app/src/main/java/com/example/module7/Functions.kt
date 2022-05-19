@@ -25,7 +25,8 @@ fun priority(s:String):Int {
     }
 }
 
-fun getArray(inputStr:String, varArray:MutableList<Variable>, position:Int):MutableList<String> {
+fun getArray(inputStr:String, varArray:MutableList<Variable>,
+             arrOfOurArr: MutableList<OurArr>, position:Int):MutableList<String> {
     val arrayRes = mutableListOf<String>()
     var i = 0
     while(i < inputStr.length) {
@@ -35,21 +36,47 @@ fun getArray(inputStr:String, varArray:MutableList<Variable>, position:Int):Muta
         else if (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '0'..'9') {
             var newStr = ""
             while (i < inputStr.length &&
-                (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '0'..'9' || inputStr[i] == '.' || inputStr[i] == '_')) {
+                (inputStr[i] in 'a'..'z' || inputStr[i] in 'A'..'Z' || inputStr[i] in '0'..'9'
+                        || inputStr[i] == '.' || inputStr[i] == '_' || inputStr[i] == '[')) {
                 newStr += inputStr[i]
+                if (inputStr[i] == '[') {
+                    ++i
+                    while (i < inputStr.length && inputStr[i] != ']') {
+                        newStr += inputStr[i]
+                        ++i
+                    }
+                    newStr += inputStr[i]
+                }
                 ++i
             }
-            if (newStr == "true") newStr="1"
-            else if(newStr == "false") newStr="0"
             if (newStr.contains("[A-Za-z]".toRegex())) {
                 if (newStr == "true") newStr="1"
                 else if(newStr == "false") newStr="0"
                 else {
                     val temp = varArray.find { it.name == newStr }
+                    var posStr = Regex("\\[.+\\]").find(newStr)?.value
                     if (temp != null)
                         newStr = temp.commonValue.toString()
-                    else
-                        throw Exception("Получение значения, несуществующей переменной! Блок $position")
+                    else if (posStr!=null) {
+                        var nameOfArr = ""
+                        var index = 0
+                        while (newStr[index] != '[') {
+                            nameOfArr += newStr[index]
+                            ++index
+                        }
+                        val temp2 = arrOfOurArr.find { it.name == nameOfArr }
+                        if (temp2 != null) {
+                            posStr = posStr.drop(1)
+                            posStr = posStr.dropLast(1)
+                            val pos = getResult(toRPN(getArray(posStr, varArray, arrOfOurArr, i))).toDouble().toInt()
+
+                            if (pos >= 0 && pos < temp2.arrOfVar.size) {
+                                newStr = temp2.arrOfVar[pos].commonValue.toString()
+                            } else throw Exception("Индекс вне границ массива! Блок $i")
+                        }
+                        else throw Exception("Получение значения всего массива или элемента несуществующего массива! Блок $i")
+                    }
+                    else throw Exception("Получение значения несуществующей переменной! Блок $position")
                 }
             }
 
@@ -68,7 +95,7 @@ fun getArray(inputStr:String, varArray:MutableList<Variable>, position:Int):Muta
             arrayRes.add(inputStr[i].toString())
             ++i
         }
-        else ++i
+        else throw Exception("Неизвестный символ! Блок $position")
     }
 
     return arrayRes
@@ -139,47 +166,137 @@ fun getResult(strRPN:MutableList<String>):String {
     return stack.last()
 }
 
-fun assignment(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i:Int){
+fun createArr(expression:String, type:String):MutableList<Variable> {
+    val newArr = mutableListOf<Variable>()
+    var i = 0
+    while(i < expression.length) {
+        if (expression[i] == ' ' || expression[i] == ',') {
+            ++i
+        } else if (expression[i] in 'a'..'z' || expression[i] in '0'..'9') {
+            var newStr = ""
+            while (i < expression.length &&
+                (expression[i] in 'a'..'z' || expression[i] in '0'..'9' || expression[i] == '.')
+            ) {
+                newStr += expression[i]
+                ++i
+            }
+            if (newStr == "true") newStr = "1"
+            else if (newStr == "false") newStr = "0"
+
+            when (type) {
+                "Int" -> newArr.add(OurInteger("i", newStr.toDouble().toInt()))
+                "Double" -> newArr.add(OurDouble("d", newStr.toDouble()))
+                "Bool" -> newArr.add(OurBool("b", newStr.toDouble().toInt() != 0))
+            }
+        } else throw Exception("Неизвестный символ при создании массива")
+    }
+    return newArr
+}
+
+fun assignment(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
+               arrOfOurArr: MutableList<OurArr>, i:Int) {
     var str = (blockList[i] as Blocks.Assignment).expression
     val name = (blockList[i] as Blocks.Assignment).name
 
-    if (name.isEmpty()) throw Exception("Error! Введите имя переменной! Блок $i")
-    str = if (str.isNotEmpty())
-        getResult(toRPN(getArray(str, variableArr, i)))
-    else
-        "0"
 
-    when ((blockList[i] as Blocks.Assignment).type) {
-        "Int" -> variableArr.add(OurInteger(name, str.toDouble().toInt()))
-        "Double" -> variableArr.add(OurDouble(name, str.toDouble()))
-        "Bool" -> variableArr.add(OurBool(name, str.toDouble().toInt() != 0))
+    if (name.isEmpty()) throw Exception("Введите имя переменной! Блок $i")
+
+    if (name.contains(Regex("\\[.*\\]"))) {
+        var nameOfArr = ""
+        var index = 0
+        while (name[index] != '[') {
+            nameOfArr += name[index]
+            ++index
+        }
+
+        var size = Regex("\\[.+\\]").find(name)?.value
+        if (size==null)
+            arrOfOurArr.add(OurArr(nameOfArr, createArr(str, (blockList[i] as Blocks.Assignment).type)))
+        else {
+            val newArr = mutableListOf<Variable>()
+            size = size.drop(1)
+            size = size.dropLast(1)
+            val len = getResult(toRPN(getArray(size, variableArr, arrOfOurArr, i))).toDouble().toInt()
+            for (c in 1..len) {
+                when ((blockList[i] as Blocks.Assignment).type) {
+                    "Int" -> newArr.add(OurInteger("i", 0))
+                    "Double" -> newArr.add(OurDouble("d", 0.0))
+                    "Bool" -> newArr.add(OurBool("b", false))
+                }
+            }
+            arrOfOurArr.add(OurArr(nameOfArr, newArr))
+        }
+    }
+    else {
+        str = if (str.isNotEmpty())
+            getResult(toRPN(getArray(str, variableArr, arrOfOurArr, i)))
+        else
+            "0"
+
+        when ((blockList[i] as Blocks.Assignment).type) {
+            "Int" -> variableArr.add(OurInteger(name, str.toDouble().toInt()))
+            "Double" -> variableArr.add(OurDouble(name, str.toDouble()))
+            "Bool" -> variableArr.add(OurBool(name, str.toDouble().toInt() != 0))
+        }
     }
 }
 
-fun changeVal(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i:Int){
+fun changeVal(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
+              arrOfOurArr:MutableList<OurArr>, i:Int) {
     var str = (blockList[i] as Blocks.ChangeVal).expression
     val name = (blockList[i] as Blocks.ChangeVal).name
 
-    val temp = variableArr.find { it.name == name }
-    if (temp != null) {
-        if (str.isNotEmpty()) {
-            str = getResult(toRPN(getArray(str, variableArr, i)))
+    if (str.isNotEmpty()) {
+        str = getResult(toRPN(getArray(str, variableArr, arrOfOurArr, i)))
+
+        val temp = variableArr.find { it.name == name }
+        if (temp != null) {
             when (temp) {
                 is OurInteger -> temp.value = str.toDouble().toInt()
                 is OurDouble -> temp.commonValue = str.toDouble()
                 is OurBool -> temp.value = str.toDouble().toInt() != 0
                 else -> temp.commonValue = str.toDouble()
             }
+            return
         }
+
+        var nameOfArr = ""
+        var index = 0
+        while (name[index] != '[') {
+            nameOfArr += name[index]
+            ++index
+        }
+        val temp2 = arrOfOurArr.find { it.name == nameOfArr }
+        if (temp2 != null) {
+            var posStr = Regex("\\[.+\\]").find(name)?.value
+            if (posStr!=null) {
+                posStr = posStr.drop(1)
+                posStr = posStr.dropLast(1)
+                val pos = getResult(toRPN(getArray(posStr, variableArr, arrOfOurArr, i))).toDouble().toInt()
+
+                if (pos>=0 && pos<temp2.arrOfVar.size) {
+                    when (temp2.arrOfVar[pos]) {
+                        is OurInteger -> (temp2.arrOfVar[pos] as OurInteger).value = str.toDouble().toInt()
+                        is OurDouble -> temp2.arrOfVar[pos].commonValue = str.toDouble()
+                        is OurBool -> (temp2.arrOfVar[pos] as OurBool).value = str.toDouble().toInt() != 0
+                        else -> temp2.arrOfVar[pos].commonValue = str.toDouble()
+                    }
+                    return
+                }
+                else throw Exception("Индекс вне границ массива! Блок $i")
+            }
+            else throw Exception("Нельзя изменить массив в целом! Блок $i")
+        }
+        else throw Exception("Изменение несуществующей переменной! Блок $i")
     }
-    else throw Exception("Error! Изменение несуществующей переменной! Блок $i")
 }
 
-fun ifBlock(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i:Int):Int{
+fun ifBlock(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
+            arrOfOurArr:MutableList<OurArr>, i:Int):Int{
     var str = (blockList[i] as Blocks.IfBlock).condition
     if (str.isNotEmpty())
-        str = getResult(toRPN(getArray(str, variableArr, i)))
-    else throw Exception("Error! Введите условие! Блок $i")
+        str = getResult(toRPN(getArray(str, variableArr, arrOfOurArr, i)))
+    else throw Exception("Введите условие! Блок $i")
 
     var position = i
     if (str.toDouble().toInt() == 0) {
@@ -192,7 +309,120 @@ fun ifBlock(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, i
     return position-i
 }
 
-fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
+fun output(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
+           arrOfOurArr:MutableList<OurArr>, i:Int):String {
+    val name = (blockList[i] as Blocks.InputOutput).expression
+    val temp = variableArr.find { it.name == name }
+    if (temp != null) {
+        return when (temp) {
+            is OurInteger -> temp.value.toString() + "\n"
+            is OurDouble -> temp.commonValue.toString() + "\n"
+            is OurBool -> temp.value.toString() + "\n"
+            else -> temp.commonValue.toString() + "\n"
+        }
+    }
+
+    var temp2 = arrOfOurArr.find { it.name == name }
+    if (temp2 != null) {
+        var res = ""
+        for (el in temp2.arrOfVar) {
+            res += when (el) {
+                is OurInteger -> el.value.toString() + " "
+                is OurDouble -> el.commonValue.toString() + " "
+                is OurBool -> el.value.toString() + " "
+                else -> el.commonValue.toString() + " "
+            }
+        }
+        return res+"\n"
+    }
+    var nameOfArr = ""
+    var index = 0
+    while (index < name.length && name[index] != '[') {
+        nameOfArr += name[index]
+        ++index
+    }
+    temp2 = arrOfOurArr.find { it.name == nameOfArr }
+    if (temp2 != null) {
+        var posStr = Regex("\\[.+\\]").find(name)?.value
+        if (posStr!=null) {
+            posStr = posStr.drop(1)
+            posStr = posStr.dropLast(1)
+            val pos = getResult(toRPN(getArray(posStr, variableArr, arrOfOurArr, i))).toDouble().toInt()
+
+            if (pos>=0 && pos<temp2.arrOfVar.size) {
+                return when (temp2.arrOfVar[0]) {
+                    is OurInteger -> (temp2.arrOfVar[pos] as OurInteger).value.toString() + "\n"
+                    is OurDouble -> temp2.arrOfVar[pos].commonValue.toString() + "\n"
+                    is OurBool -> (temp2.arrOfVar[pos] as OurBool).value.toString() + "\n"
+                    else -> temp2.arrOfVar[pos].commonValue.toString() + "\n"
+                }
+            }
+            else throw Exception("Индекс вне границ массива! Блок $i")
+        }
+        else throw Exception("Не указан индекс массива в []! Блок $i")
+    }
+    else throw Exception("Вывод несуществующей переменной! Блок $i")
+}
+
+fun endOfInput(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
+               arrOfOurArr:MutableList<OurArr>, i:Int, inputStr: String) {
+    val name = (blockList[i] as Blocks.InputOutput).expression
+    val temp = variableArr.find { it.name == name }
+    if (temp != null) {
+        when (temp) {
+            is OurInteger -> temp.value = inputStr.toDouble().toInt()
+            is OurDouble -> temp.commonValue = inputStr.toDouble()
+            is OurBool -> temp.value = inputStr.toDouble().toInt() != 0
+            else -> temp.commonValue = inputStr.toDouble()
+        }
+        return
+    }
+
+    var temp2 = arrOfOurArr.find { it.name == name }
+    if (temp2 != null) {
+        val res = inputStr.split(' ')
+        var pos = 0
+        while (pos < temp2.arrOfVar.size && pos < res.size) {
+            when (temp2.arrOfVar[pos]) {
+                is OurInteger -> (temp2.arrOfVar[pos] as OurInteger).value = res[pos].toDouble().toInt()
+                is OurDouble -> temp2.arrOfVar[pos].commonValue = res[pos].toDouble()
+                is OurBool -> (temp2.arrOfVar[pos] as OurBool).value = res[pos].toDouble().toInt() != 0
+                else -> temp2.arrOfVar[pos].commonValue = res[pos].toDouble()
+            }
+            ++pos
+        }
+        return
+    }
+    var nameOfArr = ""
+    var index = 0
+    while (index < name.length && name[index] != '[') {
+        nameOfArr += name[index]
+        ++index
+    }
+    temp2 = arrOfOurArr.find { it.name == nameOfArr }
+    if (temp2 != null) {
+        var posStr = Regex("\\[.+\\]").find(name)?.value
+        if (posStr!=null) {
+            posStr = posStr.drop(1)
+            posStr = posStr.dropLast(1)
+            val pos = getResult(toRPN(getArray(posStr, variableArr, arrOfOurArr, i))).toDouble().toInt()
+
+            if (pos>=0 && pos<temp2.arrOfVar.size) {
+                when (temp2.arrOfVar[pos]) {
+                    is OurInteger -> (temp2.arrOfVar[pos] as OurInteger).value = inputStr.toDouble().toInt()
+                    is OurDouble -> temp2.arrOfVar[pos].commonValue = inputStr.toDouble()
+                    is OurBool -> (temp2.arrOfVar[pos] as OurBool).value = inputStr.toDouble().toInt() != 0
+                    else -> temp2.arrOfVar[pos].commonValue = inputStr.toDouble()
+                }
+            }
+            else throw Exception("Индекс вне границ массива! Блок $i")
+        }
+        else throw Exception("Не указан индекс массива в []! Блок $i")
+    }
+    else throw Exception("Ввод несуществующей переменной! Блок $i")
+}
+
+fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, arrOfOurArr:MutableList<OurArr>,
            i:Int, textEdit:String, resume:Int = 0, uslov:Boolean):Triple<Int, String, String> {
     val str = (blockList[i] as Blocks.WhileBlock).condition
     var value:String
@@ -201,8 +431,8 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
     var usl = uslov
     var count = 0
     if (str.isNotEmpty())
-        value = getResult(toRPN(getArray(str, variableArr, i)))
-    else throw Exception("Error! Введите условие! Блок $i")
+        value = getResult(toRPN(getArray(str, variableArr, arrOfOurArr, i)))
+    else throw Exception("Введите условие! Блок $i")
 
     var position = i
     if (uslov && value.toDouble().toInt() == 0) {
@@ -221,7 +451,7 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
                 if (blockList[position] is Blocks.EndWhile) {
                     return Triple(position - i, outString, "")
                 } else if (blockList[position] is Blocks.WhileBlock) {
-                    val res = inLoop(blockList, variableArr, position, textEdit,resume - (position - i), usl)
+                    val res = inLoop(blockList, variableArr, arrOfOurArr, position, textEdit,resume - (position - i), usl)
                     if (res.third == "input") {
                         return Triple(position - i + res.first, outString + res.second, "input")
                     }
@@ -232,7 +462,6 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
                 }
             }
         }
-        var name:String
         while (true) {
             count = if (usl) 0 else count
             if (!usl && change=="da") usl = true
@@ -240,23 +469,14 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
                 count++
                 when (blockList[position]) {
                     is Blocks.Assignment -> {
-                        assignment(blockList, variableArr, position)
+                        assignment(blockList, variableArr, arrOfOurArr, position)
                     }
                     is Blocks.ChangeVal -> {
-                        changeVal(blockList, variableArr, position)
+                        changeVal(blockList, variableArr, arrOfOurArr, position)
                     }
                     is Blocks.InputOutput -> {
-                        name = (blockList[position] as Blocks.InputOutput).expression
                         if ((blockList[position] as Blocks.InputOutput).type == "Output") {
-                            val temp = variableArr.find { it.name == name }
-                            if (temp != null) {
-                                outString += when (temp) {
-                                    is OurInteger -> temp.value.toString() + "\n"
-                                    is OurDouble -> temp.commonValue.toString() + "\n"
-                                    is OurBool -> temp.value.toString() + "\n"
-                                    else -> temp.commonValue.toString() + "\n"
-                                }
-                            } else throw Exception("Error! Вывод несуществующей переменной! Блок $i")
+                            outString += output(blockList, variableArr, arrOfOurArr, position)
                         }
                         else {
                             if (usl) {
@@ -265,21 +485,11 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
 
                             usl = true
                             change="da"
-                            val temp = variableArr.find { it.name == name }
-                            if (temp != null) {
-                                if (textEdit.isNotEmpty()){
-                                    when (temp) {
-                                        is OurInteger -> temp.value = textEdit.toDouble().toInt()
-                                        is OurDouble -> temp.commonValue = textEdit.toDouble()
-                                        is OurBool -> temp.value = textEdit.toDouble().toInt() != 0
-                                        else -> temp.commonValue = textEdit.toDouble()
-                                    }
-                                }
-                            }
+                            endOfInput(blockList, variableArr, arrOfOurArr, position, textEdit)
                         }
                     }
                     is Blocks.IfBlock -> {
-                        val temp = ifBlock(blockList, variableArr, position)
+                        val temp = ifBlock(blockList, variableArr, arrOfOurArr, position)
                         position += temp
                         count += temp
                     }
@@ -289,7 +499,7 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
                         }
                     }
                     is Blocks.WhileBlock -> {
-                        val res = inLoop(blockList, variableArr, position, textEdit, resume, usl)
+                        val res = inLoop(blockList, variableArr, arrOfOurArr, position, textEdit, resume, usl)
                         if (res.third=="input") {
                             return Triple(position-i+res.first, res.second,"input")
                         }
@@ -300,7 +510,7 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>,
                 }
                 position++
             }
-            value = getResult(toRPN(getArray(str, variableArr, i)))
+            value = getResult(toRPN(getArray(str, variableArr, arrOfOurArr, i)))
             if (value.toDouble().toInt() == 0) {
                 break
             }
