@@ -7,6 +7,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cardBackgroundColor="#FFB8AE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,40 +18,15 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/wayHowToPut"
-                android:layout_width="110dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:entries="@array/wayHowToPut" />
-
             <TextView
-                android:id="@+id/openBracket"
-                android:layout_width="20dp"
+                android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="("
+                android:text="@string/endWhile"
                 android:textAlignment="center"
-                android:textSize="30sp" />
-
-            <EditText
-                android:id="@+id/expression"
-                android:layout_width="125dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:text="" />
-
-            <TextView
-                android:id="@+id/closeBracket"
-                android:layout_width="20dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/closeBracket"
-                android:textAlignment="center"
-                android:textSize="30sp" />
-
+                android:textSize="26sp" />
 
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

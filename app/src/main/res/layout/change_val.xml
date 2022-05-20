@@ -17,19 +17,20 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <Spinner
-                android:id="@+id/wayHowToPut"
-                android:layout_width="110dp"
+            <EditText
+                android:id="@+id/nameVariable"
+                android:layout_width="60dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:entries="@array/wayHowToPut" />
+                android:singleLine="true"
+                android:text="" />
 
             <TextView
-                android:id="@+id/openBracket"
+                android:id="@+id/textView"
                 android:layout_width="20dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
-                android:text="("
+                android:text="="
                 android:textAlignment="center"
                 android:textSize="30sp" />
 
@@ -38,19 +39,10 @@
                 android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
+                android:singleLine="true"
                 android:text="" />
 
-            <TextView
-                android:id="@+id/closeBracket"
-                android:layout_width="20dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/closeBracket"
-                android:textAlignment="center"
-                android:textSize="30sp" />
-
-
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Module7">
         <activity
+            android:name=".InputActivity"
+            android:exported="false" />
+        <activity
             android:name=".HelpActivity"
             android:exported="false" />
         <activity
@@ -17,6 +20,7 @@
             android:exported="false" />
         <activity
             android:name=".IDEActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
