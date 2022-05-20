@@ -24,7 +24,6 @@
         <item>Условие</item>
         <item>Иначе</item>
         <item>Цикл</item>
-        <item>Конец Блока</item>
         <item>Конец условия</item>
         <item>Конец цикла</item>
     </string-array>

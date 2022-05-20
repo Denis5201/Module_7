@@ -19,7 +19,7 @@
 
             <EditText
                 android:id="@+id/nameVariable"
-                android:layout_width="45dp"
+                android:layout_width="60dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:singleLine="true"
@@ -36,7 +36,7 @@
 
             <EditText
                 android:id="@+id/expression"
-                android:layout_width="100dp"
+                android:layout_width="125dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:singleLine="true"

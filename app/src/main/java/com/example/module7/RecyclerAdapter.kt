@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.EditText
+import android.widget.Spinner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.module7.databinding.*
 
@@ -17,6 +18,7 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
     class Holder(item: View):RecyclerView.ViewHolder(item) {
         var mEdit1: EditText? = null
         var mEdit2: EditText? = null
+        var mSpinner: Spinner? = null
         constructor(item: View, blockList: ArrayList<Blocks>, type:Int):this(item) {
             when (type){
                 Constants.ASSIGNMENT -> { val binding=AssignmentBinding.bind(item)
@@ -36,7 +38,7 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
                         }
                         override fun afterTextChanged(p0: Editable?) {}
                     })
-
+                    mSpinner=binding.typeVariable
                     binding.typeVariable.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                             (blockList[absoluteAdapterPosition] as Blocks.Assignment).type = p0!!.getItemAtPosition(p2).toString()
@@ -73,6 +75,7 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
                         }
                         override fun afterTextChanged(p0: Editable?) {}
                     })
+                    mSpinner=binding.wayHowToPut
                     binding.wayHowToPut.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                         override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                             (blockList[absoluteAdapterPosition] as Blocks.InputOutput).type = p0!!.getItemAtPosition(p2).toString()
@@ -141,6 +144,11 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
             is Blocks.Assignment -> {
                 holder.mEdit2!!.setText((blockList[position] as Blocks.Assignment).name)
                 holder.mEdit1!!.setText((blockList[position] as Blocks.Assignment).expression)
+                holder.mSpinner!!.setSelection(when ((blockList[position] as Blocks.Assignment).type) {
+                    "Double" -> 1
+                    "Bool" -> 2
+                    else -> 0
+                })
             }
             is Blocks.ChangeVal -> {
                 holder.mEdit2!!.setText((blockList[position] as Blocks.ChangeVal).name)
@@ -148,6 +156,10 @@ class RecyclerAdapter:RecyclerView.Adapter<RecyclerAdapter.Holder>() {
             }
             is Blocks.InputOutput -> {
                 holder.mEdit1!!.setText((blockList[position] as Blocks.InputOutput).expression)
+                holder.mSpinner!!.setSelection(when ((blockList[position] as Blocks.InputOutput).type) {
+                    "Input" -> 1
+                    else -> 0
+                })
             }
             is Blocks.IfBlock -> {
                 holder.mEdit1!!.setText((blockList[position] as Blocks.IfBlock).condition)
