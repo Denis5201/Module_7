@@ -15,4 +15,115 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:layout_width="409dp"
+        android:layout_height="635dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/buttonBackH"
+        tools:layout_editor_absoluteX="2dp"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Работа с блоками" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tДля того, чтобы добавить блок, сначала выберите необходимый тип блока, затем нажмите кнопку “Добавить”.\n
+\tЧтобы удалить блок, смахните его вправо или влево.\n
+\tДля перетаскивания блока нажмите на него и удерживайте.\n
+\tЧтобы запустить программу, составленную из блоков, нажмите на кнопку “Запустить”.
+    " />
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Создание переменных" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tВыберите тип переменной, введите её название в левом поле для ввода и её значение в правом.\n\tПримеры:\n\tInt i = 1\n\tDouble S0 = 4.5 + i\n\tBool stateOf_soul = 0\n\tЧтобы создать несколько переменных одного типа, введите их названия и значения в соответствующем порядке через “;”.\n\tПример: int i;j = 1;2\n
+ \tПримечание: все переменные по умолчанию равны 0." />
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Изменение значений" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tВведите в левое поле название переменной, а в правое - её новое значение.\n\tПример: kapusta = 100 + 100*0" />
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Условный оператор" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tОператор состоит из двух блоков: if и end. По желанию можно добавить блок else.\n\tВ поле блока if вводится условие, и если оно верно, то выполняются команды, описанные после блока if до блока else, иначе выполняются команды, описанные после блока else до блока end.\n\tЕсли блока else нет, то в случае неверности условия команды между блоками if и end будут проигнорированы." />
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Циклический оператор" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tОператор состоит из двух блоков: while и end.\n\tВ поле блока while вводится условие, и если оно верно, то выполняются команды, описанные после блока while до блока end, после чего условие снова проверяется. Если условие неверно, команды между блоками while и end будут проигнорированы.\n\tПримечание: блоки end для условного оператора и end для циклического НЕ взаимозаменяемы!" />
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ввод/вывод" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tБлок, с выбранным типом блока input, будет вызывать консоль для введения значения переменной, указанной в блоке.\n
+\tБлок, с выбранным типом блока output, будет вызывать экран для вывода значения переменной, указанной в блоке.\n
+\tДля того, чтобы ввести/вывести несколько переменных перечислите их в поле блока через запятую (для ввода в консоли вводите значения через пробел).\n
+\tПримеры:\n
+\tInput(count, myMark) (ввод с консоли: 7 5)\n
+\tOutput(if_ImGood)\n
+" />
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Массивы" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tЧтобы создать массив, используйте блок создания переменных. Для этого в поле названия нужно ввести запись вида nameOfArray[], а в поле значения - значения элементов через пробел. Если вы не хотите инициализировать массив при создании, то укажите его размер, тогда все элементы по умолчанию будут равны нулю.\n
+\tПримеры:\n
+\tBool nameOfArray[n] =\n
+\tInt siblingsAges[] = 18 12 14\n
+\tПояснение: Если вы указали размерность массива, то элементы массива, написанные справа учитываться не будут\n
+\tПримечание: нумерация элементов массива начинается с нуля" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
