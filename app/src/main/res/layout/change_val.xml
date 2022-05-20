@@ -25,6 +25,7 @@
                 android:layout_width="60dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
+                android:background="#f0ffc1"
                 android:singleLine="true"
                 android:text="" />
 
@@ -34,6 +35,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="="
+                android:background="#f0ffc1"
                 android:textAlignment="center"
                 android:textSize="30sp" />
 
@@ -41,6 +43,7 @@
                 android:id="@+id/expression"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
+                android:background="#f0ffc1"
                 android:layout_marginTop="10dp"
                 android:singleLine="true"
                 android:text="" />
