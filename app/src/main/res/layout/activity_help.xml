@@ -60,6 +60,18 @@
                 style="?android:listSeparatorTextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Операторы" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\tДля арифметических выражений мы используем операторы: +, -, *, /, % (остаток от деления), а также ^ (возведение в степень).\n
+\tДля логических выражений мы используем операторы: !=, ==, <=, >=, <, >." />
+
+            <TextView
+                style="?android:listSeparatorTextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Изменение значений" />
 
             <TextView
@@ -117,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:text="\tЧтобы создать массив, используйте блок создания переменных. Для этого в поле названия нужно ввести запись вида nameOfArray[], а в поле значения - значения элементов через пробел. Если вы не хотите инициализировать массив при создании, то укажите его размер, тогда все элементы по умолчанию будут равны нулю.\n
 \tПримеры:\n
-\tBool nameOfArray[n] =\n
+\tBool nameOfArray[n] = // при n=3: [false, false, false]\n
 \tInt siblingsAges[] = 18 12 14\n
 \tПояснение: Если вы указали размерность массива, то элементы массива, написанные справа учитываться не будут\n
 \tПримечание: нумерация элементов массива начинается с нуля" />
