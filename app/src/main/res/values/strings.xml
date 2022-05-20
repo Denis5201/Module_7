@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Module7</string>
-    <string name="nameLang">ИмяЯзыка</string>
+    <string name="nameLang">Apple Flower</string>
     <string name="begin">Начать</string>
+    <string name="creator">by Group 18</string>
     <string name="run">Запустить</string>
     <string name="help">Помощь</string>
     <string name="back">Назад</string>
@@ -9,6 +10,7 @@
     <string name="ifText">if (</string>
     <string name="whileText">while (</string>>
     <string name="closeBracket">)</string>
+    <string name="openBracket">(</string>
     <string name="endIf">end(if)</string>
     <string name="endWhile">end(while)</string>
     <string name="input">Ввод</string>

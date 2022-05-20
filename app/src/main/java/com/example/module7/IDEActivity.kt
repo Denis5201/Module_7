@@ -14,12 +14,12 @@ import java.util.*
 class IDEActivity : AppCompatActivity() {
     private lateinit var binding : ActivityIdeBinding
     private val adapter = RecyclerAdapter()
-    var variableArr = mutableListOf<Variable>()
-    var arrOfOurArr = mutableListOf<OurArr>()
-    var outString = ""
-    var textEdit = ""
+    private var variableArr = mutableListOf<Variable>()
+    private var arrOfOurArr = mutableListOf<OurArr>()
+    private var outString = ""
+    private var textEdit = ""
 
-    val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
+    private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if (it.resultCode == RESULT_OK) {
             textEdit = it.data?.getStringExtra(Constants.INPUT).toString()
             val pos = it.data?.getIntExtra(Constants.POS, 0)

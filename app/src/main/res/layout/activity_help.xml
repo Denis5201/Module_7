@@ -8,11 +8,147 @@
 
     <Button
         android:id="@+id/buttonBackH"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="40dp"
+        android:background="@drawable/button"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonBackH"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Работа с блоками" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Для того, чтобы добавить блок, сначала выберите необходимый тип блока, затем нажмите кнопку “Добавить”.\n
+Чтобы удалить блок, смахните его вправо или влево.\n
+Для перетаскивания блока нажмите на него и удерживайте.\n
+Чтобы запустить программу, составленную из блоков, нажмите на кнопку “Запустить”." />
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Создание переменных" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Выберите тип переменной, введите её название в левом поле для ввода и её значение в правом.\n
+Примеры:\n\tInt i = 1\n\tDouble S0 = 4.5 + i\n\tBool stateOf_soul = 0\n
+Чтобы создать несколько переменных одного типа, введите их названия и значения в соответствующем порядке через “;”.\n
+Пример: int i;j = 1;2\n
+Примечание: все переменные по умолчанию равны 0." />
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Операторы" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="\tДля арифметических выражений мы используем операторы: +, -, *, /, % (остаток от деления), а также ^ (возведение в степень)." />
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Изменение значений" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="\tВведите в левое поле название переменной, а в правое - её новое значение.\nПример: kapusta = 100 + 100*0" />
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Условный оператор" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="\tОператор состоит из двух блоков: if и end. По желанию можно добавить блок else.\n
+В поле блока if вводится условие, и если оно верно, то выполняются команды, описанные после блока if до блока else, иначе выполняются команды, описанные после блока else до блока end.\n
+Если блока else нет, то в случае неверности условия команды между блоками if и end будут проигнорированы." />
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Циклический оператор" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="\tОператор состоит из двух блоков: while и end.\n
+В поле блока while вводится условие, и если оно верно, то выполняются команды, описанные после блока while до блока end, после чего условие снова проверяется. Если условие неверно, команды между блоками while и end будут проигнорированы.\n
+Примечание: блоки end для условного оператора и end для циклического НЕ взаимозаменяемы!" />
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ввод/вывод" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="\tБлок, с выбранным типом блока input, будет вызывать консоль для введения значения переменной, указанной в блоке.\n
+Блок, с выбранным типом блока output, будет вызывать экран для вывода значения переменной, указанной в блоке.\n
+Для того, чтобы ввести/вывести несколько переменных перечислите их в поле блока через запятую (для ввода в консоли вводите значения через пробел).\n
+Примеры:\n
+Input(count, myMark) (ввод с консоли: 7 5)\n
+Output(if_ImGood)\n
+" />
+
+            <TextView
+                style="@style/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Массивы" />
+
+            <TextView
+                style="@style/helpText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="\tЧтобы создать массив, используйте блок создания переменных. Для этого в поле названия нужно ввести запись вида nameOfArray[], а в поле значения - значения элементов через пробел. Если вы не хотите инициализировать массив при создании, то укажите его размер, тогда все элементы по умолчанию будут равны нулю.\n
+Примеры:\n
+Bool nameOfArray[n] =  \t// при n=3: [false, false, false]\n
+Int siblingsAges[] = 18 12 14\n
+Пояснение: Если вы указали размерность массива, то элементы массива, написанные справа учитываться не будут\n
+Примечание: нумерация элементов массива начинается с нуля" />
+
+    </LinearLayout>
+
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,12 +11,15 @@
         android:theme="@style/Theme.Module7">
         <activity
             android:name=".InputActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".HelpActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ConsoleActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".IDEActivity"
@@ -24,6 +27,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

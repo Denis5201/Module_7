@@ -237,7 +237,7 @@ fun assignment(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>
                 arrOfOurArr.add(OurArr(nameOfArr, newArr))
             }
         } else {
-            str = if (arrOfExpr.isNotEmpty())
+            str = if (arrOfExpr.isNotEmpty() && arrOfExpr[0].isNotEmpty())
                 getResult(toRPN(getArray(arrOfExpr[0], variableArr, arrOfOurArr, i)))
             else
                 "0"
