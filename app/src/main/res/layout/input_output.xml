@@ -19,6 +19,7 @@
 
             <Spinner
                 android:id="@+id/wayHowToPut"
+                android:background="#bae1ff"
                 android:layout_width="110dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -27,6 +28,7 @@
             <TextView
                 android:id="@+id/openBracket"
                 android:layout_width="20dp"
+                android:background="#bae1ff"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="("
@@ -37,6 +39,7 @@
                 android:id="@+id/expression"
                 android:layout_width="125dp"
                 android:layout_height="50dp"
+                android:background="#bae1ff"
                 android:layout_marginTop="10dp"
                 android:text="" />
 
@@ -46,6 +49,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/closeBracket"
+                android:background="#bae1ff"
                 android:textAlignment="center"
                 android:textSize="30sp" />
 

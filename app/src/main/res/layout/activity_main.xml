@@ -6,12 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/background_image"
+        tools:context=".MainActivity">
+    </LinearLayout>
+
+
     <Button
         android:id="@+id/buttonBegin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_width="205dp"
+        android:layout_height="116dp"
+        android:layout_marginTop="72dp"
+        android:background="@drawable/button_begin"
         android:text="@string/begin"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textName" />
@@ -21,8 +32,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nameLang"
+        android:textSize="60sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

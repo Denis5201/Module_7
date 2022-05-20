@@ -6,6 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".InputActivity">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:srcCompat="@drawable/background_image" />
+
     <EditText
         android:id="@+id/textInput"
         android:layout_width="0dp"
@@ -17,8 +30,9 @@
 
     <Button
         android:id="@+id/enter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="159dp"
+        android:layout_height="84dp"
+        android:background="@drawable/button_begin"
         android:text="@string/input"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"

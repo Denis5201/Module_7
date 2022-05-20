@@ -6,20 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".IDEActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/background_image"
+        tools:context=".MainActivity">
+    </LinearLayout>
+
     <Button
         android:id="@+id/buttonRun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
+        android:layout_width="129dp"
+        android:layout_height="61dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="44dp"
+        android:background="@drawable/button_begin"
         android:text="@string/run"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintStart_toEndOf="@+id/buttonHelp" />
 
     <Button
         android:id="@+id/buttonHelp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="48dp"
+        android:layout_width="129dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginBottom="44dp"
+        android:background="@drawable/button_begin"
         android:text="@string/help"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -37,6 +51,7 @@
         android:id="@+id/spinner"
         android:layout_width="0dp"
         android:layout_height="50dp"
+        android:background="#e5ffc3"
         android:entries="@array/typeOfBlock"
         app:layout_constraintEnd_toStartOf="@+id/addBlock"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,6 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:text="@string/add"
+        android:background="@drawable/button_begin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -19,6 +19,7 @@
 
             <Spinner
                 android:id="@+id/typeVariable"
+                android:background="#2BFFCF"
                 android:layout_width="110dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
@@ -28,6 +29,7 @@
                 android:id="@+id/nameVariable"
                 android:layout_width="60dp"
                 android:layout_height="50dp"
+                android:background="#2BFFCF"
                 android:layout_marginTop="10dp"
                 android:singleLine="true"
                 android:text="" />
@@ -39,6 +41,7 @@
                 android:layout_marginTop="10dp"
                 android:text="="
                 android:textAlignment="center"
+                android:background="#2BFFCF"
                 android:textSize="30sp" />
 
             <EditText
@@ -47,6 +50,7 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:singleLine="true"
+                android:background="#2BFFCF"
                 android:text="" />
 
         </LinearLayout>
