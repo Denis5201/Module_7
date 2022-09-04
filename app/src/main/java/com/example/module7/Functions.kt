@@ -509,6 +509,7 @@ fun inLoop(blockList:MutableList<Blocks>, variableArr: MutableList<Variable>, ar
                     is Blocks.ElseBlock -> {
                         while (position < blockList.size && blockList[position] !is Blocks.EndIf) {
                             ++position
+                            ++count
                         }
                     }
                     is Blocks.WhileBlock -> {
